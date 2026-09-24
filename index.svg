@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
+    style="position: fixed; top: 0; left: 0;">
+    <foreignObject x="0" y="0" width="100%" height="100%">
+        <body xmlns="http://www.w3.org/1999/xhtml">
+            <meta content='width=device-width, initial-scale=1.0' name='viewport'></meta>
+            <iframe style="position:fixed;top:0;left:0;width:100%;height:100%;border:none;"
+                id="jellyfin"></iframe>
+        </body>
+    </foreignObject>
+    <script>
+    <![CDATA[
+        const frame=document.getElementById("jellyfin");
+        fetch("https://cdn.jsdelivr.net/gh/marble892/jellyfin-web-compiled@latest/index.html")
+        .then(r=>r.text())
+        .then(html=>{
+            const blob=new Blob([html],{type:"text/html"});
+            frame.src=URL.createObjectURL(blob);
+        });
+        frame.addEventListener('load', () => {
+            const doc=frame.contentDocument;
+            const updateTitle=()=>{
+                document.title=doc.title
+            };
+            updateTitle();
+            const observer=new MutationObserver(updateTitle);
+            observer.observe(doc.querySelector('title'),{
+                childList:true,
+                characterData:true,
+                subtree:true
+            })
+        });
+    ]]>
+    </script>
+</svg>
